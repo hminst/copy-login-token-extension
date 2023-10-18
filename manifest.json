@@ -1,0 +1,15 @@
+{
+  "name": "Copy login-token",
+  "manifest_version": 3,
+  "version": "1.0",
+  "description": "Copy the login-token of an AEM as a Cloudservice window to localhost for easier AEM frontend development.",
+  "permissions": ["cookies"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png"
+  }
+}
