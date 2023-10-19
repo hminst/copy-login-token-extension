@@ -5,7 +5,7 @@ const LOGIN_TOKEN_COOKIE_NAME = 'login-token';
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
 (async function initPopupWindow() {
-  
+
 })();
 
 form.addEventListener('submit', handleFormSubmit);
@@ -14,7 +14,7 @@ async function handleFormSubmit(event) {
   event.preventDefault();
 
   clearMessage();
-  
+
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   if (tab?.url) {
@@ -36,29 +36,29 @@ async function handleFormSubmit(event) {
 }
 
 async function copyLoginToken(origin) {
-    try {
-      const loginTokenCookie = await chrome.cookies.get({url:origin, name: LOGIN_TOKEN_COOKIE_NAME})
+  try {
+    const loginTokenCookie = await chrome.cookies.get({ url: origin, name: LOGIN_TOKEN_COOKIE_NAME })
 
-      if(!loginTokenCookie) {
-        return 'login-token not found!'
-      }
-      const loginTokenValue = loginTokenCookie.value;
-      chrome.cookies.set(
-        { domain: 'localhost', name: LOGIN_TOKEN_COOKIE_NAME, value: loginTokenValue, url: 'http://localhost', path: '/' }
-      )
-
-    } catch (error) {
-      return `Unexpected error: ${error.message}`;
+    if (!loginTokenCookie) {
+      return 'login-token not found!'
     }
-    return `token copied!`;
-  }
+    const loginTokenValue = loginTokenCookie.value;
+    chrome.cookies.set(
+      { domain: 'localhost', name: LOGIN_TOKEN_COOKIE_NAME, value: loginTokenValue, url: 'http://localhost', path: '/' }
+    )
 
-  function setMessage(str) {
-    message.textContent = str;
-    message.hidden = false;
+  } catch (error) {
+    return `Unexpected error: ${error.message}`;
   }
+  return `token copied!`;
+}
 
-  function clearMessage() {
-    message.hidden = true;
-    message.textContent = '';
-  }
+function setMessage(str) {
+  message.textContent = str;
+  message.hidden = false;
+}
+
+function clearMessage() {
+  message.hidden = true;
+  message.textContent = '';
+}
