@@ -1,3 +1,7 @@
 body {
-    width: 120px;
+    width: 9rem;
+}
+
+button {
+    width: 100%;
 }
