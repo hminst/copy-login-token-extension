@@ -23,7 +23,7 @@ openProxyPageButton.addEventListener('click', openProxyPage);
 async function openProxyPage(event) {
   event.preventDefault();
   const url = await resolveCurrentUrl();
-  copyLoginToken()
+  await copyLoginToken()
   const regex = /(\/content.*)/g;
   let hash = url.hash;
 
