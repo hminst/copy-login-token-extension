@@ -1,4 +1,4 @@
-# login-token copy extension
+# AEM Quicksite creation support
 AEM quicksite creation using the local node live proxy to an AEM environment needs a login token.
 It is fairly easy when local users are available, but not when everything is SSO via IMS and local users are not allowed.
 
