@@ -3,11 +3,12 @@
   "manifest_version": 3,
   "version": "1.0",
   "description": "Copy the login-token of an AEM as a Cloudservice window to localhost for easier AEM frontend development.",
-  "permissions": ["cookies", "tabs"],
+  "permissions": ["cookies", "tabs", "storage"],
   "host_permissions": ["https://*.adobeaemcloud.com/*","http://localhost/*"],
   "action": {
     "default_popup": "popup.html"
   },
+  "options_page": "options.html",
   "icons": {
     "16": "icon.png",
     "32": "icon.png",

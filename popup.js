@@ -3,11 +3,18 @@ const message = document.getElementById('message');
 const openProxyPageButton = document.getElementById('open-via-proxy');
 
 const LOGIN_TOKEN_COOKIE_NAME = 'login-token';
-const LOCAL_PROXY = 'http://localhost:7000'
+let localProxyPort;
+const LOCAL_PROXY = 'http://localhost'
+
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
 async function initPopupWindow() {
   const url = await resolveCurrentUrl();
+
+  chrome.storage.sync.get({ port: '7000' }, function (configItems) {
+    localProxyPort = configItems.port;
+  })
+
   console.log(url)
   if (!url.origin.includes('adobeaemcloud.com')) {
     copyTokenButton.setAttribute('disabled', 'disabled')
@@ -34,7 +41,7 @@ async function openProxyPage(event) {
     path = url.pathname.match(regex);
   }
   console.log(path)
-  const urlToOpen = new URL(`${LOCAL_PROXY}${path}.html`)
+  const urlToOpen = new URL(`${LOCAL_PROXY}:${localProxyPort}${path}.html`)
   urlToOpen.searchParams.append('wcmmode', 'disabled')
   window.open(urlToOpen);
 }
