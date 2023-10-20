@@ -12,9 +12,8 @@ Since this is not an approved Extension available through the marketplace, it is
 
 ## Usage
 Once installed, navigate to your AEMaaCS instance and click on the plugin icon.
-The button to execute the copy action is opened.
+Two actions are available:
+- "Copy Token" copies the login-token to the localhost context
+- "Open Page" opens the current page (editor or sites navigation) in a new tab in your localhost proxy
 
 ![Extension Open](./readme-files/extension-opened.PNG)
-
-
-![Extension Success](./readme-files/extension-success.PNG)
