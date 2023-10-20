@@ -1,46 +1,67 @@
-const form = document.getElementById('control-row');
+const copyTokenButton = document.getElementById('copy-token');
 const message = document.getElementById('message');
+const openProxyPageButton = document.getElementById('open-via-proxy');
 
 const LOGIN_TOKEN_COOKIE_NAME = 'login-token';
+const LOCAL_PROXY = 'http://localhost:7000'
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
-(async function initPopupWindow() {
+async function initPopupWindow() {
+  const url = await resolveCurrentUrl();
+  console.log(url)
+  if (!url.origin.includes('adobeaemcloud.com')) {
+    copyTokenButton.setAttribute('disabled', 'disabled')
+    openProxyPageButton.setAttribute('disabled', 'disabled')
+    setMessage('please go to the desired AEMaaCS tab to use the actions.')
+  }
+};
 
-})();
+document.addEventListener("DOMContentLoaded", initPopupWindow);
+copyTokenButton.addEventListener('click', copyLoginToken);
+openProxyPageButton.addEventListener('click', openProxyPage);
 
-form.addEventListener('submit', handleFormSubmit);
-
-async function handleFormSubmit(event) {
+async function openProxyPage(event) {
   event.preventDefault();
+  const url = await resolveCurrentUrl();
+  copyLoginToken()
+  const regex = /(\/content.*)/g;
+  let hash = url.hash;
 
-  clearMessage();
+  let path;
+  if (hash && (hash.includes('/aem/sites.html') || hash.includes('/aem/editor.html'))) {
+    path = hash.match(regex);
+  } else {
+    path = url.pathname.match(regex);
+  }
+  console.log(path)
+  const urlToOpen = new URL(`${LOCAL_PROXY}${path}.html`)
+  urlToOpen.searchParams.append('wcmmode', 'disabled')
+  window.open(urlToOpen);
+}
 
+async function resolveCurrentUrl() {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
   if (tab?.url) {
     try {
       let url = new URL(tab.url);
-
-      if (!url) {
-        setMessage('Invalid URL');
-        return;
-      }
-
-      let message = await copyLoginToken(url.origin);
-      setMessage(message);
+      return url;
     } catch {
       // ignore
     }
-
   }
 }
 
-async function copyLoginToken(origin) {
+
+async function copyLoginToken(event) {
+  if (event) {
+    event.preventDefault();
+  }
+  const url = await resolveCurrentUrl();
   try {
-    const loginTokenCookie = await chrome.cookies.get({ url: origin, name: LOGIN_TOKEN_COOKIE_NAME })
+    const loginTokenCookie = await chrome.cookies.get({ url: url.origin, name: LOGIN_TOKEN_COOKIE_NAME })
 
     if (!loginTokenCookie) {
-      return 'login-token not found!'
+      setMessage('login-token not found!')
     }
     const loginTokenValue = loginTokenCookie.value;
     chrome.cookies.set(
@@ -48,9 +69,9 @@ async function copyLoginToken(origin) {
     )
 
   } catch (error) {
-    return `Unexpected error: ${error.message}`;
+    setMessage(`Unexpected error: ${error.message}`);
   }
-  return `token copied!`;
+  setMessage(`token copied!`);
 }
 
 function setMessage(str) {
