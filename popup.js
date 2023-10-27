@@ -9,19 +9,10 @@ const LOCAL_PROXY = 'http://localhost'
 
 // The async IIFE is necessary because Chrome <89 does not support top level await.
 async function initPopupWindow() {
-  const url = await resolveCurrentUrl();
-
   chrome.storage.sync.get({ port: '7000' }, function (configItems) {
     localProxyPort = configItems.port;
   })
-
-  console.log(url)
-  if (!url.origin.includes('adobeaemcloud.com')) {
-    copyTokenButton.setAttribute('disabled', 'disabled')
-    openProxyPageButton.setAttribute('disabled', 'disabled')
-    setMessage('please go to the desired AEMaaCS tab to use the actions.')
-  }
-};
+}
 
 document.addEventListener("DOMContentLoaded", initPopupWindow);
 copyTokenButton.addEventListener('click', copyLoginToken);
@@ -50,8 +41,7 @@ async function resolveCurrentUrl() {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (tab?.url) {
     try {
-      let url = new URL(tab.url);
-      return url;
+      return new URL(tab.url);
     } catch {
       // ignore
     }
